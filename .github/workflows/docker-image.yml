@@ -37,7 +37,11 @@ jobs:
         sparse-checkout: 'front'
         sparse-checkout-cone-mode: true
         path: .
+      
 
+    - run: ls
+
+    
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
