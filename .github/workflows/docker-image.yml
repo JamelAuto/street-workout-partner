@@ -17,14 +17,14 @@ on:
   # Manually trigger the wf  
   workflow_dispatch:
 
+defaults:
+  run:
+    working-directory: ./front
+  
 jobs:
   build_front:
     runs-on: ubuntu-latest
     environment: development
-    defaults:
-      run:
-        working-directory: ./front
-
     strategy:
       matrix:
         node-version: [16.x]
