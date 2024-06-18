@@ -10,7 +10,7 @@ on:
       - /front/*
   pull_request:
     branches: 
-      - "main"
+      - main
     paths:
       - /front/*
 
