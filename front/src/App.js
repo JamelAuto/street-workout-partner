@@ -31,8 +31,7 @@ function App() {
     <div className="container">
       <div>
         <small>
-          You are running this application in <b>{process.env.NODE_ENV}</b>{" "}
-          mode.
+          You are running this application in <b>{process.env.NODE_ENV}</b>{" "} mode.
         </small>
         <form>
           <input
