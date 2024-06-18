@@ -4,11 +4,15 @@ on:
 
   # Front CI CD 
   push:
-    branches: [ "main" ]
-    paths: [/front/*]
+    branches:
+      - main
+    paths: 
+      - /front/*
   pull_request:
-    branches: [ "main" ]
-    paths: [/front/*]
+    branches: 
+      - "main"
+    paths:
+      - /front/*
 
   # Manually trigger the wf  
   workflow_dispatch:
