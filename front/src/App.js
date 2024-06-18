@@ -32,6 +32,7 @@ function App() {
       <div>
         <small>
           You are running this application in <b>{process.env.NODE_ENV}</b>{" "} mode.
+          Small changes
         </small>
         <form>
           <input

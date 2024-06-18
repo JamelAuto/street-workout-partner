@@ -7,12 +7,12 @@ on:
     branches:
       - main
     paths: 
-      - /front/*
+      - 'front/**'
   pull_request:
     branches: 
       - main
     paths:
-      - /front/*
+      - 'front/**'
 
   # Manually trigger the wf  
   workflow_dispatch:
