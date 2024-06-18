@@ -1,15 +1,25 @@
-name: CI-CD
+name: deploy_front
 
 on:
+
+  # Front CI CD 
   push:
-    branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
+    branches:
+      - main
+    paths: 
+      - 'front/**'
+      - '.github/workflows/deploy_front.yml'
+
+  # Manually trigger the wf  
+  workflow_dispatch:
 
 jobs:
-  build:
-
+  build_front:
     runs-on: ubuntu-latest
+    environment: development
+    defaults:
+      run:
+        working-directory: ./front
 
     strategy:
       matrix:
@@ -18,13 +28,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        sparse-checkout: 'front'
+        sparse-checkout-cone-mode: true
+
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+        cache-dependency-path: front/package-lock.json
     - run: npm ci
     #- run: npm test
+    - run: npm run ${{ vars.BUILD_ENV }}
      
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2
@@ -38,6 +55,8 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v4
       with:
-        context: .
+        context: front
         push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/street-workout-partner-back:latest
+        tags: ${{ secrets.DOCKER_USERNAME }}/street-workout-partner-front:latest
+        build-args: |
+          BUILD_ENV=${{ vars.BUILD_ENV }}
