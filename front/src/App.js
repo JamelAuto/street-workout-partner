@@ -8,7 +8,7 @@ function App() {
 
   const generatePrograms = async (maxReps) => {
     try {
-      const response = await fetch("http://localhost:5000/generate-program", {
+      const response = await fetch("http://backend:5000/generate-program", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
