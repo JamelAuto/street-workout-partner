@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const app = express();
-const PORT = process.env.PORT || 30776;
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(bodyParser.json());
@@ -65,5 +65,5 @@ app.post("/generate-program", (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`Server is running on http://192.168.56.50:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
