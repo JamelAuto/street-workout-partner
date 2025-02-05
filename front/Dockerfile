@@ -5,7 +5,6 @@ FROM node:18-alpine
 WORKDIR /app/
 
 # Copying all the tools and dependencies in the package.json file to the working directory `app`
-COPY public/ /app/public
 COPY src/ /app/src
 COPY package.json /app/
 
