@@ -41,7 +41,7 @@ jobs:
         cache-dependency-path: front/package-lock.json
     - run: npm ci
     #- run: npm test
-    - run: npm install vite --save-dev
+    # - run: npm install vite --save-dev
     - run: npm run ${{ vars.BUILD_ENV }}
      
     - name: Set up Docker Buildx
