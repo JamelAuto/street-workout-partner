@@ -21,11 +21,6 @@ jobs:
       run:
         working-directory: ./front
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
     - uses: actions/checkout@v4
       with:
@@ -33,10 +28,10 @@ jobs:
         sparse-checkout: 'front'
         sparse-checkout-cone-mode: true
 
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Use Node.js 18
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: 18
         cache: 'npm'
         cache-dependency-path: front/package-lock.json
     - run: npm ci
