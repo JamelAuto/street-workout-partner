@@ -19,7 +19,7 @@
     "web-vitals": "^4.1.1"
   },
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vite build",
     "build-dev": "vite build --mode dev",
     "serve": "vite preview"
