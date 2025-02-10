@@ -19,4 +19,4 @@ EXPOSE 3000
 
 #Command to start the Docker container for the frontend React.js application
 # CMD npm run $BUILD_ENV
-CMD npm start
+CMD npm run dev
