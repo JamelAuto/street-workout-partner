@@ -28,24 +28,20 @@ jobs:
         sparse-checkout: 'front'
         sparse-checkout-cone-mode: true
 
-    - name: Use Node.js 18
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18
-        cache: 'npm'
-        cache-dependency-path: front/package-lock.json
-    - run: npm ci
-    - name: Install dependencies
-      run: npm install --legacy-peer-deps
+    # - name: Use Node.js 18
+    #   uses: actions/setup-node@v3
+    #   with:
+    #     node-version: 18
+    #     cache: 'npm'
+    #     cache-dependency-path: front/package-lock.json
+    # - run: npm ci
+    # - name: Install dependencies
+    #   run: npm install --legacy-peer-deps
     
-    - name: Verify installed dependencies
-      run: npm list --depth=0
+    # - name: Verify installed dependencies
+    #   run: npm list --depth=0
     
-    - name: Ensure Vite React Plugin is installed
-      run: npm install @vitejs/plugin-react --save-dev
-    #- run: npm test
-    # - run: npm install vite --save-dev
-    - run: npm run ${{ vars.BUILD_ENV }}
+    # - run: npm run ${{ vars.BUILD_ENV }}
      
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v2

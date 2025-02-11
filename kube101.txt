@@ -1,0 +1,144 @@
+one container per pod = more flexible, can restart one etc. Scaling and resilience!
+
+outils :
+kubectl completion sur bash
+
+main    192.168.56.106
+worker1 192.168.56.103
+worker2 192.168.56.104
+
+yum update -y
+
+# Set hostname
+hostnamectl set-hostname main
+
+# Set static IP
+vi /etc/sysconfig/network-scripts/ifcfg-enp0s8
+DEVICE=enp0s8
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=192.168.56.10x
+NETMASK=255.255.255.0
+GATEWAY=192.168.56.100
+DNS1=8.8.8.8
+
+# add dns
+vi /etc/hosts
+192.168.56.10x xxxx
+
+
+# turn off swap
+swapoff -a
+sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
+
+# disable se linux
+setenforce 0
+sed -i 's/^SELINUX=enforcing$/SELINUX=disabled/' /etc/selinux/config
+cat /etc/selinux/config
+
+# pre requis
+modprobe overlay
+modprobe br_netfilter
+
+cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
+overlay
+br_netfilter
+EOF
+
+cat <<EOF | sudo tee /etc/sysctl.d/99-kubernetes-cri.conf
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv4.ip_forward = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+EOF
+
+sysctl --system
+
+# Stop firewall systemctl stop firewalld
+systemctl disable firewalld
+systemctl status firewalld
+
+# install containerd
+dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+dnf update -y
+dnf install -y containerd.io
+mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
+
+# Set cgroupdriver to systemd
+vi /etc/containerd/config.toml 
+
+# Find the following section: [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]
+# And change the value of SystemdCgroup to true
+
+systemctl restart containerd
+systemctl enable containerd
+systemctl status containerd
+ps -ef | grep containerd
+
+# Install below mentioned packages (All nodes):
+yum install -y wget
+yum install -y vim-enhanced
+yum install -y git
+yum install -y curl
+
+# add kube repo
+tee /etc/yum.repos.d/kubernetes.repo <<EOF
+[kubernetes]
+name=Kubernetes
+baseurl=https://pkgs.k8s.io/core:/stable:/v1.29/rpm/
+enabled=1
+gpgcheck=1
+repo_gpgcheck=1
+gpgkey=https://pkgs.k8s.io/core:/stable:/v1.29/rpm/repodata/repomd.xml.key
+EOF
+
+# install kube
+dnf install -y kubelet kubeadm kubectl
+
+# on all
+dnf install epel-release -y
+dnf install ufw -y
+ufw enable
+
+# fw rules
+ufw allow 6443/tcp
+ufw allow 2379/tcp
+ufw allow 2380/tcp
+ufw allow 10252/tcp
+# ne pas faire ceux du haut pour les workers
+ufw allow 10251/tcp
+ufw allow 10255/tcp
+ufw allow 10250/tcp
+ufw reload
+
+# enable kubelet
+systemctl enable kubelet
+
+# create cluster
+kubeadm init --apiserver-advertise-address=192.168.56.106 --pod-network-cidr=10.123.16.0/24
+
+# if needed
+kubeadm token create --print-join-command
+
+kubeadm join 192.168.56.106:6443 --token 4fr8z9.ea6mgojdyrbnuh8t \
+        --discovery-token-ca-cert-hash sha256:feef4853e981132cbde246bd5aefe253b65cd17721fe064bbecbc5712bb42daf
+
+# export conf
+export KUBECONFIG=/etc/kubernetes/admin.conf
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+kubectl get nodes
+kubectl get pods -n kube-system
+kubectl get pod -A
+
+# add network
+curl https://raw.githubusercontent.com/projectcalico/calico/v3.26.3/manifests/calico.yaml -O
+kubectl apply -f calico.yaml
+
+kubectl get pod -A
+kubectl get nodes -o wide
+kubectl get componentstatus
+kubectl get pods -n kube-system -o wide
+
