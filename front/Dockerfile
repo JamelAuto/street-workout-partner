@@ -11,6 +11,9 @@ COPY package.json /app/
 ARG BUILD_ENV
 ENV BUILD_ENV=${BUILD_ENV}
 
+RUN echo "BUILD_ENV is set to: $BUILD_ENV"
+
+
 #Installing all the tools and dependencies in the container
 RUN npm install
 RUN npm run $BUILD_ENV
