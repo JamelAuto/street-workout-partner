@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -17,7 +17,8 @@ spec:
         image: jimmymro/street-workout-partner-front:latest
         env:
         - name: REACT_APP_BACKEND_URL
-          value: "http://backend-service:5000" # Communication avec le backend
+          value: "http://192.168.56.106:30001" # Communication avec le backend
+          # value: "http://backend-service:5000" # Communication avec le backend
         ports:
         - containerPort: 3000  
 ---
@@ -30,7 +31,7 @@ spec:
     app: frontend
   ports:
     - protocol: TCP
-      port: 80  
+      port: 3000  
       targetPort: 3000  
       nodePort: 30000
   type: NodePort 
