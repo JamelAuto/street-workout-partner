@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: frontend
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: frontend
@@ -16,9 +16,11 @@ spec:
       - name: frontend
         image: jimmymro/street-workout-partner-front:latest
         env:
-        - name: REACT_APP_BACKEND_URL
+        - name: VITE_API_URL
           value: "http://192.168.56.106:30001" # Communication avec le backend
           # value: "http://backend-service:5000" # Communication avec le backend
+        - name: VITE_ENV
+          value: "development"
         ports:
         - containerPort: 3000  
 ---

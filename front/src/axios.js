@@ -7,6 +7,10 @@ const defaultOptions = {
   },
 };
 
+
+
 const instance = axios.create(defaultOptions);
+
+console.log(instance.defaults.baseURL);
 
 export default instance;

@@ -11,9 +11,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors()); // CORS configuration
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../front/dist')));
-
 // POST endpoint to generate workout program
 app.post("/generate-program", (req, res) => {
   // Extract user inputs from req.body
@@ -66,11 +63,6 @@ app.post("/generate-program", (req, res) => {
 
   // Send response with generated programs
   res.json({ pushUpsProgram, pullUpsProgram, dipsProgram });
-});
-
-// The "catchall" handler: for any request that doesn't match one above, send back React's index.html file.
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../front/dist/index.html'));
 });
 
 // Start server
