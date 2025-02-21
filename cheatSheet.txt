@@ -1,0 +1,23 @@
+kubectl apply -f deploy_back.yaml -n lab
+kubectl apply -f deploy_front.yaml -n lab
+
+kubectl delete deployment backend -n lab
+kubectl delete service backend-service -n lab
+kubectl delete deployment frontend -n lab
+kubectl delete service  frontend-service -n lab
+
+kubectl rollout restart deployment frontend -n lab
+
+kubectl create namespace lab
+
+
+kubectl get svc frontend-service -n lab
+
+
+4. Assurer la communication entre le frontend et le backend
+
+Le frontend et le backend peuvent communiquer entre eux en utilisant les services Kubernetes. Le service du backend doit être accessible par son nom (dans ce cas backend-service), ce qui est pris en charge par le DNS interne de Kubernetes.
+
+Dans le frontend, assure-toi que l'URL du backend est configurée pour utiliser le service Kubernetes du backend, par exemple :
+
+const backendUrl = "http://backend-service:5000";  // Utilise le nom du service

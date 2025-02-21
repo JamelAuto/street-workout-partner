@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box } from '@mui/material';
 
-const UserInputForm = ({ generatePrograms }) => {
+const UserInputForm = ({ generateprogram }) => {
   const [maxReps, setMaxReps] = useState({
     maxRepsPushUps: '',
     maxRepsPullUps: '',
@@ -41,7 +41,7 @@ const UserInputForm = ({ generatePrograms }) => {
         maxRepsPullUps: parseInt(maxReps.maxRepsPullUps, 10),
         maxRepsDips: parseInt(maxReps.maxRepsDips, 10),
       };
-      generatePrograms(formattedMaxReps);
+      generateprogram(formattedMaxReps);
     }
   };
 

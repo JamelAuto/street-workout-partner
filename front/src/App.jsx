@@ -1,52 +1,26 @@
-import React, { useState } from "react";
-import UserInputForm from "./features/components/UserInputForm";
-import ProgramDisplay from "./features/components/ProgramDisplay";
-import { Container, Typography, Box, CssBaseline } from "@mui/material";
-import axios from "./axios.js";
+import React from "react";
+import { Box } from "@mui/material";
+import { MenuBar } from "./Menu";
+import Footer from "./Footer";
+import { UserProvider } from './context/UserContext';
 
-function App() {
-  const [programs, setPrograms] = useState({});
-
-  const generatePrograms = async (maxReps) => {
-    try {
-      const response = await axios.post("/generate-program", {
-        maxRepsPushUps: maxReps.maxRepsPushUps,
-        maxRepsPullUps: maxReps.maxRepsPullUps,
-        maxRepsDips: maxReps.maxRepsDips,
-      });
-      setPrograms(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
+export const App = ({ children, darkMode, onDarkModeChange }) => {
   return (
-    <Container component="main" maxWidth="sm">
-      <CssBaseline />
-      <Box
-        sx={{
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-        }}
-      >
-        <Typography component="h1" variant="h4">
-          Street Workout Partner
-        </Typography>
-        <Typography component="p" variant="body2" color="textSecondary">
-          You are running this application in <b>{process.env.NODE_ENV}</b> mode.
-        </Typography>
-        <UserInputForm generatePrograms={generatePrograms} />
-        <ProgramDisplay programs={programs} />
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        minHeight: '100vh',
+        maxHeight: '100vh', // Add this
+        overflow: 'hidden' // Add this
+      }}>
+        <MenuBar darkMode={darkMode} onDarkModeChange={onDarkModeChange} />
+        <Box sx={{ 
+          flex: 1,
+          overflow: 'auto' // Add this to make content scrollable if needed
+        }}>
+          {children}
+        </Box>
+        <Footer />
       </Box>
-      <Box mt={5}>
-        <Typography variant="body2" color="textSecondary" align="center">
-          &copy; {new Date().getFullYear()} Street Workout Partner. All rights reserved.
-        </Typography>
-      </Box>
-    </Container>
   );
-}
-
-export default App;
+};

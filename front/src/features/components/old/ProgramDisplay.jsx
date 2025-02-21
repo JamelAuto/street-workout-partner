@@ -1,25 +1,25 @@
 import React from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 
-const ProgramDisplay = ({ programs }) => {
+const ProgramDisplay = ({ program }) => {
   return (
     <Box mt={4}>
-      {programs.pushUpsProgram && (
+      {program.pushUpsProgram && (
         <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
           <Typography variant="h6">Push Ups</Typography>
-          <Typography>{programs.pushUpsProgram}</Typography>
+          <Typography>{program.pushUpsProgram}</Typography>
         </Paper>
       )}
-      {programs.pullUpsProgram && (
+      {program.pullUpsProgram && (
         <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
           <Typography variant="h6">Pull Ups</Typography>
-          <Typography>{programs.pullUpsProgram}</Typography>
+          <Typography>{program.pullUpsProgram}</Typography>
         </Paper>
       )}
-      {programs.dipsProgram && (
+      {program.dipsProgram && (
         <Paper elevation={3} sx={{ p: 2, mb: 2 }}>
           <Typography variant="h6">Dips</Typography>
-          <Typography>{programs.dipsProgram}</Typography>
+          <Typography>{program.dipsProgram}</Typography>
         </Paper>
       )}
     </Box>
