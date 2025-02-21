@@ -71,18 +71,6 @@ const CurrentMaxDisplay = ({ userProgress, onRefresh }) => {
           </Grid>
         ))}
       </Grid>
-      <Button
-        variant="contained"
-        onClick={onRefresh}
-        sx={{
-          background: 'linear-gradient(45deg, #43a047 30%, #2e7d32 90%)',
-          '&:hover': {
-            background: 'linear-gradient(45deg, #2e7d32 30%, #1b5e20 90%)',
-          }
-        }}
-      >
-        Refresh
-      </Button>
     </Paper>
   );
 };

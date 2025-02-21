@@ -8,6 +8,40 @@ const User = require('./models/User');
 const WorkoutEntry = require('./models/WorkoutEntry');
 const jwt = require('jsonwebtoken');
 const pool = require("./db");
+const prometheus = require('prom-client');
+
+// Create a Registry to register metrics
+const register = new prometheus.Registry();
+prometheus.collectDefaultMetrics({ register });
+
+// Create custom metrics
+const httpRequestDurationMicroseconds = new prometheus.Histogram({
+  name: 'http_request_duration_seconds',
+  help: 'Duration of HTTP requests in seconds',
+  labelNames: ['method', 'route', 'status_code'],
+  buckets: [0.1, 0.5, 1, 2, 5]
+});
+
+const chatRequestsTotal = new prometheus.Counter({
+  name: 'chat_requests_total',
+  help: 'Total number of chat requests'
+});
+
+const authenticatedUsersTotal = new prometheus.Gauge({
+  name: 'authenticated_users_total',
+  help: 'Total number of authenticated users'
+});
+
+const workoutEntriesTotal = new prometheus.Counter({
+  name: 'workout_entries_total',
+  help: 'Total number of workout entries created'
+});
+
+// Register custom metrics
+register.registerMetric(httpRequestDurationMicroseconds);
+register.registerMetric(chatRequestsTotal);
+register.registerMetric(authenticatedUsersTotal);
+register.registerMetric(workoutEntriesTotal);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +51,26 @@ app.use(express.json());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
+
+// Middleware to measure request duration
+app.use((req, res, next) => {
+  const end = httpRequestDurationMicroseconds.startTimer();
+  res.on('finish', () => {
+    end({ method: req.method, route: req.route?.path || req.path, status_code: res.statusCode });
+  });
+  next();
+});
+
+// Metrics endpoint for Prometheus
+app.get('/metrics', async (req, res) => {
+  try {
+    res.set('Content-Type', register.contentType);
+    res.end(await register.metrics());
+  } catch (err) {
+    res.status(500).end(err);
+  }
+});
+
 
 // Add conversation history storage (in memory - replace with database for production)
 const conversations = new Map();

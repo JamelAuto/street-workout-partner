@@ -2,7 +2,13 @@ kubectl apply -f postgres_secret.yaml -n lab
 
 kubectl apply -f deploy_back.yaml -n lab
 kubectl apply -f deploy_front.yaml -n lab
-kubectl apply -f deploy_postgres.yaml
+kubectl apply -f deploy_postgres.yaml -n lab
+
+kubectl apply -f deploy_grafana.yaml -n monitoring
+kubectl apply -f deploy_prometheus.yaml -n monitoring
+kubectl apply -f prometheus_configmap.yaml -n monitoring
+kubectl apply -f prometheus_pv.yaml -n monitoring
+kubectl apply -f prometheus_secret.yaml -n monitoring
 
 
 kubectl delete deployment backend -n lab
