@@ -11,3 +11,11 @@ data:
       - job_name: 'kubernetes-pods'
         kubernetes_sd_configs:
           - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            action: keep
+            regex: backend
+      - job_name: 'street-workout-backend'
+        static_configs:
+          - targets: ['backend-service:5000']
+        metrics_path: '/metrics'
