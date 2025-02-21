@@ -1,10 +1,15 @@
+kubectl apply -f postgres_secret.yaml -n lab
+
 kubectl apply -f deploy_back.yaml -n lab
 kubectl apply -f deploy_front.yaml -n lab
+kubectl apply -f deploy_postgres.yaml
+
 
 kubectl delete deployment backend -n lab
 kubectl delete service backend-service -n lab
 kubectl delete deployment frontend -n lab
 kubectl delete service  frontend-service -n lab
+kubectl delete service postgres -n lab
 
 kubectl rollout restart deployment frontend -n lab
 

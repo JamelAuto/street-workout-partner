@@ -59,7 +59,7 @@ const ProfilePage = () => {
     try {
       if (tab === 0) {
         // Sign In
-        const response = await axios.post('http://localhost:5000/login', {
+        const response = await axios.post('/login', {
           email: formData.email,
           password: formData.password,
         });
