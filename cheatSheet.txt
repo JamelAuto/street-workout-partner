@@ -4,12 +4,18 @@ kubectl apply -f deploy_back.yaml -n lab
 kubectl apply -f deploy_front.yaml -n lab
 kubectl apply -f deploy_postgres.yaml -n lab
 
+kubectl delete namespace monitoring
+kubectl delete  pv prometheus-pv
+kubectl delete  pv grafana-pv
+
+kubectl create namespace monitoring
+
 kubectl apply -f deploy_grafana.yaml -n monitoring
 kubectl apply -f deploy_prometheus.yaml -n monitoring
 kubectl apply -f prometheus_configmap.yaml -n monitoring
 kubectl apply -f prometheus_pv.yaml -n monitoring
 kubectl apply -f prometheus_secret.yaml -n monitoring
-
+kubectl apply -f grafana_pv.yaml -n monitoring
 
 kubectl delete deployment backend -n lab
 kubectl delete service backend-service -n lab
@@ -24,11 +30,4 @@ kubectl create namespace lab
 
 kubectl get svc frontend-service -n lab
 
-
-4. Assurer la communication entre le frontend et le backend
-
-Le frontend et le backend peuvent communiquer entre eux en utilisant les services Kubernetes. Le service du backend doit être accessible par son nom (dans ce cas backend-service), ce qui est pris en charge par le DNS interne de Kubernetes.
-
-Dans le frontend, assure-toi que l'URL du backend est configurée pour utiliser le service Kubernetes du backend, par exemple :
-
-const backendUrl = "http://backend-service:5000";  // Utilise le nom du service
+kubectl label nodes worker2 volume-node=true

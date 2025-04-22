@@ -13,6 +13,18 @@ spec:
       labels:
         app: grafana
     spec:
+      securityContext:
+        fsGroup: 1000   
+
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: volume-node
+                    operator: In
+                    values:
+                      - "true"
       containers:
       - name: grafana
         image: grafana/grafana:latest
@@ -24,6 +36,13 @@ spec:
               secretKeyRef:
                 name: prometheus-secret
                 key: grafana-admin-password
+        volumeMounts:
+        - name: grafana-storage
+          mountPath: /var/lib/grafana 
+      volumes:
+      - name: grafana-storage
+        persistentVolumeClaim:
+          claimName: grafana-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -39,3 +58,15 @@ spec:
   selector:
     app: grafana
   type: NodePort
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: grafana-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

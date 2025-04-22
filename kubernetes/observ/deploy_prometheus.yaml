@@ -13,10 +13,6 @@ spec:
       labels:
         app: prometheus
     spec:
-      securityContext:
-        runAsUser: 65534 
-        runAsGroup: 65534 
-
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -35,10 +31,10 @@ spec:
         - name: prometheus-config
           mountPath: /etc/prometheus
         - name: prometheus-storage
-          mountPath: /var/lib/prometheus
+          mountPath: /prometheus
         args:
           - "--config.file=/etc/prometheus/prometheus.yml"
-          - "--storage.tsdb.path=/var/lib/prometheus/"
+          - "--storage.tsdb.path=/prometheus/"
           - "--web.listen-address=:9090"
       volumes:
       - name: prometheus-config
@@ -62,16 +58,3 @@ spec:
   selector:
     app: prometheus
   type: NodePort
-
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: prometheus-pvc
-  namespace: monitoring
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 10Gi
